@@ -5,74 +5,67 @@
 //  Created by Lin Ochoa on 12/5/24.
 //
 
-import Observation
+import SwiftData
 import SwiftUI
 
 struct ContentView: View {
-    @State private var expenses = Expenses()
+    @Environment(\.modelContext) var modelContext
+    
     @State private var showingAddExpense = false
     
     @State private var isPersonal = false
     @State private var isBusiness = false
+    @State private var sortOrder = [
+        SortDescriptor(\ExpenseItem.name),
+        SortDescriptor(\ExpenseItem.amount)
+    ]
+    
+    @State private var showingPersonalExpenses = true
     
     var body: some View {
         NavigationStack {
-            List {
-                Section("Personal costs") {
-                    ForEach(expenses.items.filter {$0.type == "Personal"}) { item in
-                        HStack {
-                            Text(item.name)
-                                .font(.headline)
-                            Spacer()
-                            AmountView(amount: item.amount)
+            ExpensesList(sortOrder: sortOrder, showingPersonalExpenses: showingPersonalExpenses)
+                .navigationTitle("iExpense")
+                .toolbar {
+                    NavigationLink {
+                        AddView()
+                    } label: {
+                        Label("Add Expense", systemImage: "plus")
+                    }
+                    Button(showingPersonalExpenses ? "Business Expenses" : "Personal Expenses") {
+                        showingPersonalExpenses.toggle()
+                    }
+                    Menu("Sort", systemImage: "arrow.up.arrow.down") {
+                        Picker("Sort By", selection: $sortOrder) {
+                            Text("Name (A-Z)")
+                                .tag([
+                                    SortDescriptor(\ExpenseItem.name),
+                                    SortDescriptor(\ExpenseItem.amount)
+                                ])
+                            Text("Name (Z-A)")
+                                .tag([
+                                    SortDescriptor(\ExpenseItem.name, order: .reverse),
+                                    SortDescriptor(\ExpenseItem.amount)
+                                ])
+                            Text("Amount(Cheapest First)")
+                                .tag([
+                                    SortDescriptor(\ExpenseItem.amount),
+                                    SortDescriptor(\ExpenseItem.name)
+                                ])
+                            Text("Amount (Most Expensive First)")
+                                .tag([
+                                    SortDescriptor(\ExpenseItem.amount, order: .reverse),
+                                    SortDescriptor(\ExpenseItem.name)
+                                ])
                         }
                     }
-                    .onDelete { offsets in
-                        removeItems(at: offsets, type: "Personal")
-                    }
                 }
-                
-                Section("Business costs") {
-                    ForEach(expenses.items.filter {$0.type == "Business"}) { item in
-                        HStack {
-                            Text(item.name)
-                                .font(.headline)
-                            Spacer()
-                            AmountView(amount: item.amount)
-                        }
-                    }
-                    .onDelete { offsets in
-                        removeItems(at: offsets, type: "Business")
-                    }
-                }
-        
-            }
-            .navigationTitle("iExpense")
-            .toolbar {
-                NavigationLink {
-                    AddView(expenses: expenses)
-                } label: {
-                    Label("Add Expense", systemImage: "plus")
-                }
-            }
         }
     }
     
-    func removeItems(at offsets: IndexSet, type: String) {
-       
-        // Get filtered items of the specified type
-        let filteredItems = expenses.items.filter { $0.type == type }
-        
-        // Convert offsets to indices in the filtered array
-        let indexToRemove = filteredItems[offsets.first!]
-       
-       // Remove items from the original array
-        if let indexInOriginalArray = expenses.items.firstIndex(where: { $0.id == indexToRemove.id }) {
-            expenses.items.remove(at: indexInOriginalArray)
-        }
-    }
 }
 
 #Preview {
     ContentView()
+        .modelContainer(for: ExpenseItem.self)
 }
