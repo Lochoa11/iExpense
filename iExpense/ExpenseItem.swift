@@ -10,9 +10,9 @@ import SwiftUI
 
 @Model
 class ExpenseItem {
-    var name: String
-    var type: String
-    var amount: Double
+    let name: String
+    let type: String
+    let amount: Double
     
     init(name: String, type: String, amount: Double) {
         self.name = name

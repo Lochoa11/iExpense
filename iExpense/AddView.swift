@@ -51,13 +51,6 @@ struct AddView: View {
 }
 
 #Preview {
-    do {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let container = try ModelContainer(for: ExpenseItem.self, configurations: config)
-        return AddView()
-            .modelContainer(container)
-        
-    } catch {
-        return Text("Failed to create container: \(error.localizedDescription)")
-    }
+    AddView()
+        .modelContainer(for: ExpenseItem.self)
 }
