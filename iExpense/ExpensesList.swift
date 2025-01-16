@@ -27,10 +27,17 @@ struct ExpensesList: View {
                     
                     Text(item.amount, format: .currency(code: localCurrency))
                         .style(for: item)
+                        .changeColor(for: item.amount)
                 }
             }
             .onDelete(perform: removeItems)
         }
+    }
+    
+    init(sortOrder: [SortDescriptor<ExpenseItem>], showingPersonalExpenses: Bool) {
+        _expenses = Query(filter: #Predicate<ExpenseItem> { item in
+            return showingPersonalExpenses ? item.type.contains("Personal") : item.type.contains("Business")
+        }, sort: sortOrder)
     }
     
     func removeItems(at offsets: IndexSet) {
@@ -42,6 +49,6 @@ struct ExpensesList: View {
 }
 
 #Preview {
-    ExpensesList()
+    ExpensesList(sortOrder: [SortDescriptor(\ExpenseItem.name)], showingPersonalExpenses: true)
         .modelContainer(for: ExpenseItem.self)
 }

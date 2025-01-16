@@ -17,4 +17,14 @@ extension View {
             return self.font(.title)
         }
     }
+    
+    func changeColor(for amount: Double) -> some View {
+        if amount < 10.00 {
+            return self.foregroundStyle(.green)
+        } else if amount < 100.00 {
+            return self.foregroundStyle(.yellow)
+        } else {
+            return self.foregroundStyle(.red)
+        }
+    }
 }
