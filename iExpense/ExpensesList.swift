@@ -35,13 +35,11 @@ struct ExpensesList: View {
     }
     
     init(sortOrder: [SortDescriptor<ExpenseItem>], expensesListType: String) {
-        _expenses = Query(filter: #Predicate<ExpenseItem> { item in
+        _expenses = Query(filter: #Predicate<ExpenseItem> {
             if expensesListType == "All" {
                 return true
-            } else if expensesListType == "Personal" {
-                return item.type.contains("Personal")
             } else {
-                return item.type.contains("Business")
+                return $0.type == expensesListType
             }
         }, sort: sortOrder)
     }

@@ -12,7 +12,7 @@ struct AddView: View {
     @State private var type = "Personal"
     @State private var amount = 0.0
     
-    let types = ["Business", "Personal"]
+    static let types = ["Business", "Personal"]
     
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
@@ -20,7 +20,7 @@ struct AddView: View {
     var body: some View {
         Form {
             Picker("Type", selection: $type) {
-                ForEach(types, id: \.self) {
+                ForEach(Self.types, id: \.self) {
                     Text($0)
                 }
             }

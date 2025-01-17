@@ -20,7 +20,7 @@ struct ContentView: View {
         SortDescriptor(\ExpenseItem.amount)
     ]
     
-    @State private var expensesListType = "All"
+    @State private var expensesListType = "Personal"
     
     var body: some View {
         NavigationStack {
@@ -31,15 +31,6 @@ struct ContentView: View {
                         AddView()
                     } label: {
                         Label("Add Expense", systemImage: "plus")
-                    }
-                    Button(expensesListType) {
-                        if expensesListType == "All" {
-                            expensesListType = "Personal"
-                        } else if expensesListType == "Personal" {
-                            expensesListType = "Business"
-                        } else {
-                            expensesListType = "All"
-                        }
                     }
                     Menu("Sort", systemImage: "arrow.up.arrow.down") {
                         Picker("Sort By", selection: $sortOrder) {
@@ -63,6 +54,17 @@ struct ContentView: View {
                                     SortDescriptor(\ExpenseItem.amount, order: .reverse),
                                     SortDescriptor(\ExpenseItem.name)
                                 ])
+                        }
+                    }
+                    Menu("Filter", systemImage: "line.3.horizontal.decrease.circle") {
+                        Picker("Filter", selection: $expensesListType) {
+                            Text("Show All Expenses")
+                                .tag("All")
+                            
+                            ForEach(AddView.types, id: \.self) { type in
+                                Text(type)
+                                    .tag(type)
+                            }
                         }
                     }
                 }
