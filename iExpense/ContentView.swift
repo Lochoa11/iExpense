@@ -20,11 +20,11 @@ struct ContentView: View {
         SortDescriptor(\ExpenseItem.amount)
     ]
     
-    @State private var showingPersonalExpenses = true
+    @State private var expensesListType = "All"
     
     var body: some View {
         NavigationStack {
-            ExpensesList(sortOrder: sortOrder, showingPersonalExpenses: showingPersonalExpenses)
+            ExpensesList(sortOrder: sortOrder, expensesListType: expensesListType)
                 .navigationTitle("iExpense")
                 .toolbar {
                     NavigationLink {
@@ -32,8 +32,14 @@ struct ContentView: View {
                     } label: {
                         Label("Add Expense", systemImage: "plus")
                     }
-                    Button(showingPersonalExpenses ? "Business Expenses" : "Personal Expenses") {
-                        showingPersonalExpenses.toggle()
+                    Button(expensesListType) {
+                        if expensesListType == "All" {
+                            expensesListType = "Personal"
+                        } else if expensesListType == "Personal" {
+                            expensesListType = "Business"
+                        } else {
+                            expensesListType = "All"
+                        }
                     }
                     Menu("Sort", systemImage: "arrow.up.arrow.down") {
                         Picker("Sort By", selection: $sortOrder) {

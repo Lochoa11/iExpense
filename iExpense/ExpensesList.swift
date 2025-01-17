@@ -34,9 +34,15 @@ struct ExpensesList: View {
         }
     }
     
-    init(sortOrder: [SortDescriptor<ExpenseItem>], showingPersonalExpenses: Bool) {
+    init(sortOrder: [SortDescriptor<ExpenseItem>], expensesListType: String) {
         _expenses = Query(filter: #Predicate<ExpenseItem> { item in
-            return showingPersonalExpenses ? item.type.contains("Personal") : item.type.contains("Business")
+            if expensesListType == "All" {
+                return true
+            } else if expensesListType == "Personal" {
+                return item.type.contains("Personal")
+            } else {
+                return item.type.contains("Business")
+            }
         }, sort: sortOrder)
     }
     
@@ -49,6 +55,6 @@ struct ExpensesList: View {
 }
 
 #Preview {
-    ExpensesList(sortOrder: [SortDescriptor(\ExpenseItem.name)], showingPersonalExpenses: true)
+    ExpensesList(sortOrder: [SortDescriptor(\ExpenseItem.name)], expensesListType: "All")
         .modelContainer(for: ExpenseItem.self)
 }
