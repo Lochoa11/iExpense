@@ -29,6 +29,9 @@ struct ExpensesList: View {
                         .style(for: item)
                         .changeColor(for: item.amount)
                 }
+                .accessibilityElement()
+                .accessibilityLabel("\(item.name) $\(item.amount)")
+                .accessibilityHint(item.type)
             }
             .onDelete(perform: removeItems)
         }
